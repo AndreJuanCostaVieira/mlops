@@ -6,15 +6,8 @@ from dataclasses import dataclass
 
 
 
-@dataclass(frozen=True)
-class StaticAtts:
 
-    categ_features =    ['sight_left_class', 'sight_right_class',
-                        'blood_pressure_class', 'blood_glucose_class',
-                        'serum_creatinine_class', 'SGOT_AST_class',
-                        'SGOT_ALT_class', 'gamma_GTP_class']
-    
-    encoder = pickle.load(open('features/artifacts/ordinal.pkl' , 'rb'))
+encoder = pickle.load(open('features/artifacts/ordinal.pkl' , 'rb'))
 
 def get_bmi(row):
     weight = row["weight"]
@@ -120,6 +113,9 @@ def preprocess(df):
     df["SGOT_ALT_class"] = df.apply(classify_SGOT_ALT, axis=1)
     df["gamma_GTP_class"] = df.apply(classify_gamma_GTP, axis=1)
 
-    df[StaticAtts.categ_features] = StaticAtts.encoder.transform(df[StaticAtts.categ_features])
+    df[StaticAtts.categ_features] = encoder.transform(df[['sight_left_class', 'sight_right_class',
+                        'blood_pressure_class', 'blood_glucose_class',
+                        'serum_creatinine_class', 'SGOT_AST_class',
+                        'SGOT_ALT_class', 'gamma_GTP_class']])
 
     return df
